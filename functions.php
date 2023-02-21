@@ -5,7 +5,7 @@
 		static $db;                   // объявление $db
 		if($db===null) {              // если небыло коннекта    
 			try {                     // попытка подключения
-				$db = new PDO('mysql:host=localhost;dbname=midiguitar','root','',[
+				$db = new PDO('mysql:host=;dbname=','root','',[
 				PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 				]); 
 				$db->exec('SET NAMES UTF8');	 
