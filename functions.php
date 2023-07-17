@@ -1,10 +1,10 @@
 <?php
 
 // функция возвращает PDO или строковую ошибку PDOException $e
-	function f_pdoConnect() {         // Но лучше возвращать тип PDO
-		static $db;                   // объявление $db
-		if($db===null) {              // если небыло коннекта    
-			try {                     // попытка подключения
+	function f_pdoConnect() {         
+		static $db;                  
+		if($db===null) {              
+			try {                     
 				$db = new PDO('mysql:host=;dbname=','root','',[
 				PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 				]); 
@@ -20,7 +20,7 @@
     
 // функция возвращает массив аккордов по id  f_strArrGetAkkords($strIdUser);
 	function f_strArrGetAkkords($id):array {
-		// добавить проверку выполнения
+		
 		$db = f_pdoConnect();  
 		$arrAkkords = [];
 		$sql        = "SELECT * FROM Akkords WHERE id_user = $id";
@@ -40,9 +40,9 @@
 		$db  = f_pdoConnect();
 		$sql = "DELETE FROM Akkords WHERE id_user = $strId";
 		try { // пытаемся выполнить запрос
-			$db -> exec($sql);     // POD запрос
+			$db -> exec($sql);    
 			echo "<br />  удалены предыдущие аккорды";
-			return true;           // выводим true;
+			return true;           
 		} catch (Exception $e) { // Отловить ошибку PDO
 			echo "<br /> Ошибка удаления <br />";
 			return false;
@@ -59,13 +59,13 @@
 		foreach($arrAkkords as $arrAkkord) {
 			$sql = $sql . "('" . $strId . "','" . $arrAkkord[0] . "','" . $arrAkkord[1] . "','" . $arrAkkord[2] . "'),";
 		}
-		$sql = substr($sql,0,-1); // Удаляем последнюю запятую
+		$sql = substr($sql,0,-1); 
 
-		try { // пытаемся выполнить запрос
-			$db -> exec($sql);     // POD запрос
+		try { 
+			$db -> exec($sql);     
 			// echo "<br /> Успешно добавлено <br />";
-			return true;           // выводим true;
-		} catch (Exception $e) { // Отловить ошибку PDO
+			return true;          
+		} catch (Exception $e) { 
 			// echo "<br /> Ошибка добавления <br /> $e";
 			return false;
 		}
@@ -96,11 +96,11 @@
 
 // Проверяет есть ли уже такой ник нейм /  f_blCheckNickName($_POST["Name"])
     function f_blCheckNickName($strNickName) : bool {                                             
-	    $db  = f_pdoConnect();                                    // вернем PDO
-		$strRequest = $db->query('SELECT nick_name FROM Users');  // выполняем запрос
-		$arrResult = $strRequest->fetchAll(PDO::FETCH_COLUMN, 0); // перевели строку в массив
-		foreach($arrResult as $strRow){                           // для каждого элемента
-		  if($strRow == $strNickName) return true;              // если уже есть false
+	    $db  = f_pdoConnect();                                    
+		$strRequest = $db->query('SELECT nick_name FROM Users');  
+		$arrResult = $strRequest->fetchAll(PDO::FETCH_COLUMN, 0); 
+		foreach($arrResult as $strRow){                           
+		  if($strRow == $strNickName) return true;              
 		}
 	 return false;
    }
@@ -109,19 +109,19 @@
 //	                                    [$_POST['Name'],$_POST['Pass'],$_POST['Mail']]); в базу
 	function f_blInsertParamsPost($arrStringsInputValues, $arrStringNameSqlValues) : bool { 
   //-------------------------------массив входных значений, массив входных полей	 
-		$db  = f_pdoConnect();                                    // вернем PDO
-		for($i=0;$i<count($arrStringNameSqlValues);$i++) {        // Добавляем кавычки
+		$db  = f_pdoConnect();                                    
+		for($i=0;$i<count($arrStringNameSqlValues);$i++) {        
 		 $arrStringNameSqlValues[$i] = "'" . $arrStringNameSqlValues[$i] . "'";
 		}
 		// объединяем элементы массива implode / разделяем exlode 
-		$arrInput  = implode(",",$arrStringsInputValues);             // объединяем входной массив 
-		$arrSqlVal = implode(",",$arrStringNameSqlValues);            // объединяем массив значений
-		$sql   = "INSERT INTO Users ($arrInput) VALUES ($arrSqlVal)"; // добавляем в строку запроса
+		$arrInput  = implode(",",$arrStringsInputValues);             
+		$arrSqlVal = implode(",",$arrStringNameSqlValues);            
+		$sql   = "INSERT INTO Users ($arrInput) VALUES ($arrSqlVal)"; 
 		// echo $sql;
 		// примитивно отловить ошибку
-		try { // пытаемся выполнить запрос
-			$db -> exec($sql);     // POD запрос
-			return true;           // выводим true;
+		try { 
+			$db -> exec($sql);     
+			return true;           
 		} catch (Exception $e) {
 			return false;
 			header("Location:2.php?none = true;");
@@ -149,10 +149,10 @@
 				  ($sqlNickName,'0','','1,40,53,66,53,40')";
 		  
 		  try { // пытаемся выполнить запрос
-		   $db -> exec($sql);     // POD запрос
+		   $db -> exec($sql);     
 		   //echo "<br /> Успешно добавлено";
-		   return true;           // выводим true;
-		  } catch (Exception $e) { // Отловить ошибку PDO
+		   return true;           
+		  } catch (Exception $e) { 
 		   echo "<br /> Ошибка добавления";
 		   return false;
 		   //header("Location:2.php?none = true;");
@@ -176,12 +176,12 @@
  //                   если пароль не совпадает 1
   //                   если все совпадает id_user 
 		function f_blCheckNameAndPass($strNickName, $strPass) : string  {
-			$db  = f_pdoConnect(); 	                                  // подключаем PD
-			$blIs = false;                                            // есть ник нейм
-			$strRequest = $db->query('SELECT nick_name FROM Users');  // выполняем запрос
-			$arrResult = $strRequest->fetchAll(PDO::FETCH_COLUMN, 0); // перевели строку в массив
-			foreach($arrResult as $strRow) {                          // для каждого элемента                  
-				if($strRow == $strNickName) $blIs = true;             // если есть такой nick_name
+			$db  = f_pdoConnect(); 	                                  
+			$blIs = false;                                            
+			$strRequest = $db->query('SELECT nick_name FROM Users');  
+			$arrResult = $strRequest->fetchAll(PDO::FETCH_COLUMN, 0); 
+			foreach($arrResult as $strRow) {                                        
+				if($strRow == $strNickName) $blIs = true;             
 			}
 			$strNickName = "'" . $strNickName . "'";
 			if($blIs) { // если ник нейм есть проверяем пароль
